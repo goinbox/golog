@@ -130,8 +130,12 @@ func (this *buffer) Write(p []byte) (int, error) {
 }
 
 func (this *buffer) Flush() error {
+	var err error
+
 	<-this.lockCh
-	err := this.buf.Flush()
+	if this.buf != nil {
+		err = this.buf.Flush()
+	}
 	this.lockCh <- 1
 
 	return err
