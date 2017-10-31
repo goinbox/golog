@@ -8,10 +8,13 @@ import (
 )
 
 func TestAsyncLogger(t *testing.T) {
-	InitAsyncLogRoutine(4096)
-	defer FreeAsyncLogRoutine()
 	InitBufferAutoFlushRoutine(1024, time.Second*7)
-	FreeBuffers()
+	InitAsyncLogRoutine(4096)
+
+	defer func() {
+		FreeBuffers()
+		FreeAsyncLogRoutine()
+	}()
 
 	wg := new(sync.WaitGroup)
 

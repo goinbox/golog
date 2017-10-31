@@ -51,15 +51,20 @@ type asyncLogRoutine struct {
 }
 
 func (this *asyncLogRoutine) run() {
+	defer func() {
+		this.freeCh <- 1
+	}()
+
 	for {
-		select {
-		case am, _ := <-this.msgCh:
-			this.processAsyncMsg(am)
+		am := <-this.msgCh
+		free := this.processAsyncMsg(am)
+		if free {
+			return
 		}
 	}
 }
 
-func (this *asyncLogRoutine) processAsyncMsg(am *asyncMsg) {
+func (this *asyncLogRoutine) processAsyncMsg(am *asyncMsg) bool {
 	switch am.kind {
 	case ASYNC_MSG_KIND_LOG:
 		am.logger.Log(am.level, am.msg)
@@ -68,8 +73,10 @@ func (this *asyncLogRoutine) processAsyncMsg(am *asyncMsg) {
 	case ASYNC_MSG_KIND_FREE_LOGGER:
 		am.logger.Free()
 	case ASYNC_MSG_KIND_FREE_ROUTINE:
-		this.freeCh <- 1
+		return true
 	}
+
+	return false
 }
 
 /**  @} */

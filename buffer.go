@@ -38,6 +38,7 @@ func InitBufferAutoFlushRoutine(maxBufNum int, timeInterval time.Duration) {
 func FreeBuffers() {
 	bfr.freeCh <- 1
 	<-bfr.freeCh
+	bfr = nil
 }
 
 /**

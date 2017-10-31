@@ -88,7 +88,7 @@ func (this *simpleLogger) Emergency(msg []byte) {
 func (this *simpleLogger) Log(level int, msg []byte) error {
 	writer, ok := this.levelWriters[level]
 	if !ok {
-		errors.New("Level not exists")
+		return errors.New("Level not exists")
 	}
 
 	msg = this.formater.Format(level, msg)
@@ -107,5 +107,4 @@ func (this *simpleLogger) Flush() error {
 func (this *simpleLogger) Free() {
 	this.w.Free()
 	close(this.lockCh)
-	this.levelWriters = nil
 }
