@@ -1,6 +1,9 @@
 package golog
 
-import "bytes"
+import (
+	"bytes"
+	"os"
+)
 
 const (
 	TIME_FMT_STR_YEAR   = "2006"
@@ -25,4 +28,13 @@ func AppendBytes(b []byte, elems ...[]byte) []byte {
 	}
 
 	return buf.Bytes()
+}
+
+func FileExist(path string) bool {
+	_, err := os.Stat(path)
+
+	if os.IsNotExist(err) {
+		return false
+	}
+	return true
 }

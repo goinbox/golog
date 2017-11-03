@@ -8,7 +8,6 @@
 package golog
 
 import (
-	"andals/gobox/misc"
 	"errors"
 	//     "fmt"
 	"os"
@@ -54,7 +53,7 @@ func (this *FileWriter) CloseOnFree(closeOneFree bool) *FileWriter {
 
 func (this *FileWriter) Write(msg []byte) (int, error) {
 	// file may be deleted when doing logrotate
-	if !misc.FileExist(this.path) {
+	if !FileExist(this.path) {
 		this.Close()
 		this.File, _ = openFile(this.path)
 	}
@@ -138,9 +137,9 @@ func (this *FileWithSplitWriter) Write(msg []byte) (int, error) {
 func makeFileSuffix(split int) string {
 	switch split {
 	case SPLIT_BY_DAY:
-		return time.Now().Format(misc.TIME_FMT_STR_YEAR + misc.TIME_FMT_STR_MONTH + misc.TIME_FMT_STR_DAY)
+		return time.Now().Format(TIME_FMT_STR_YEAR + TIME_FMT_STR_MONTH + TIME_FMT_STR_DAY)
 	case SPLIT_BY_HOUR:
-		return time.Now().Format(misc.TIME_FMT_STR_YEAR + misc.TIME_FMT_STR_MONTH + misc.TIME_FMT_STR_DAY + misc.TIME_FMT_STR_HOUR)
+		return time.Now().Format(TIME_FMT_STR_YEAR + TIME_FMT_STR_MONTH + TIME_FMT_STR_DAY + TIME_FMT_STR_HOUR)
 	default:
 		return ""
 	}
