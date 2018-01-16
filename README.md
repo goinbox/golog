@@ -1,5 +1,5 @@
 # golog
 
-go get -d github.com/andals/golog
+go get -d github.com/goinbox/golog
 
-[doc](https://godoc.org/github.com/Andals/golog)
+[doc](https://godoc.org/github.com/goinbox/golog)
