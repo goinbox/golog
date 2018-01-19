@@ -9,8 +9,8 @@ package golog
 
 import (
 	"errors"
-	//     "fmt"
 	"os"
+	"sync"
 	"time"
 )
 
@@ -20,7 +20,7 @@ import (
 
 type FileWriter struct {
 	path        string
-	lockCh      chan int
+	lock        *sync.Mutex
 	closeOnFree bool
 
 	*os.File
@@ -32,17 +32,13 @@ func NewFileWriter(path string) (*FileWriter, error) {
 		return nil, err
 	}
 
-	this := &FileWriter{
+	return &FileWriter{
 		path:        path,
-		lockCh:      make(chan int, 1),
+		lock:        new(sync.Mutex),
 		closeOnFree: false,
 
 		File: f,
-	}
-
-	this.lockCh <- 1
-
-	return this, nil
+	}, nil
 }
 
 func (this *FileWriter) CloseOnFree(closeOneFree bool) *FileWriter {
@@ -58,9 +54,9 @@ func (this *FileWriter) Write(msg []byte) (int, error) {
 		this.File, _ = openFile(this.path)
 	}
 
-	<-this.lockCh
+	this.lock.Lock()
 	n, err := this.File.Write(msg)
-	this.lockCh <- 1
+	this.lock.Unlock()
 
 	return n, err
 }
@@ -72,7 +68,6 @@ func (this *FileWriter) Flush() error {
 func (this *FileWriter) Free() {
 	if this.closeOnFree {
 		this.File.Close()
-		close(this.lockCh)
 	}
 }
 

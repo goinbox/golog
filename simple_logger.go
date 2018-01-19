@@ -8,6 +8,7 @@ package golog
 
 import (
 	"errors"
+	"sync"
 )
 
 type simpleLogger struct {
@@ -16,8 +17,7 @@ type simpleLogger struct {
 	levelWriters map[int]IWriter
 	formater     IFormater
 
-	//replace mutex when logging
-	lockCh chan int
+	lock *sync.Mutex
 }
 
 func NewSimpleLogger(writer IWriter, globalLevel int, formater IFormater) (*simpleLogger, error) {
@@ -31,7 +31,7 @@ func NewSimpleLogger(writer IWriter, globalLevel int, formater IFormater) (*simp
 		w:            writer,
 		levelWriters: make(map[int]IWriter),
 
-		lockCh: make(chan int, 1),
+		lock: new(sync.Mutex),
 	}
 
 	noopWriter := new(NoopWriter)
@@ -47,8 +47,6 @@ func NewSimpleLogger(writer IWriter, globalLevel int, formater IFormater) (*simp
 		formater = new(NoopFormater)
 	}
 	this.formater = formater
-
-	this.lockCh <- 1
 
 	return this, nil
 }
@@ -93,9 +91,9 @@ func (this *simpleLogger) Log(level int, msg []byte) error {
 
 	msg = this.formater.Format(level, msg)
 
-	<-this.lockCh
+	this.lock.Lock()
 	writer.Write(msg)
-	this.lockCh <- 1
+	this.lock.Unlock()
 
 	return nil
 }
@@ -106,5 +104,4 @@ func (this *simpleLogger) Flush() error {
 
 func (this *simpleLogger) Free() {
 	this.w.Free()
-	close(this.lockCh)
 }

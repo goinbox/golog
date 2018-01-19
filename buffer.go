@@ -104,8 +104,8 @@ type buffer struct {
 	w   IWriter
 	buf *bufio.Writer
 
-	lockCh chan int
-	index  uint64
+	lock  *sync.Mutex
+	index uint64
 }
 
 func NewBuffer(w IWriter, bufsize int) *buffer {
@@ -113,19 +113,18 @@ func NewBuffer(w IWriter, bufsize int) *buffer {
 		w:   w,
 		buf: bufio.NewWriterSize(w, bufsize),
 
-		lockCh: make(chan int, 1),
+		lock: new(sync.Mutex),
 	}
 
-	this.lockCh <- 1
 	bfr.addBuffer(this)
 
 	return this
 }
 
 func (this *buffer) Write(p []byte) (int, error) {
-	<-this.lockCh
+	this.lock.Lock()
 	n, err := this.buf.Write(p)
-	this.lockCh <- 1
+	this.lock.Unlock()
 
 	return n, err
 }
@@ -133,11 +132,11 @@ func (this *buffer) Write(p []byte) (int, error) {
 func (this *buffer) Flush() error {
 	var err error
 
-	<-this.lockCh
+	this.lock.Lock()
 	if this.buf != nil {
 		err = this.buf.Flush()
 	}
-	this.lockCh <- 1
+	this.lock.Unlock()
 
 	return err
 }
