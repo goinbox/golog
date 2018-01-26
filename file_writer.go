@@ -71,6 +71,10 @@ func (this *FileWriter) Free() {
 	}
 }
 
+func (this *FileWriter) ForceFree() {
+	this.File.Close()
+}
+
 func openFile(path string) (*os.File, error) {
 	return os.OpenFile(path, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0644)
 }
