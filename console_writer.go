@@ -27,17 +27,17 @@ func NewStderrWriter() *ConsoleWriter {
 	}
 }
 
-func (this *ConsoleWriter) Write(msg []byte) (int, error) {
-	this.lock.Lock()
-	n, err := this.File.Write(msg)
-	this.lock.Unlock()
+func (c *ConsoleWriter) Write(msg []byte) (int, error) {
+	c.lock.Lock()
+	n, err := c.File.Write(msg)
+	c.lock.Unlock()
 
 	return n, err
 }
 
-func (this *ConsoleWriter) Flush() error {
+func (c *ConsoleWriter) Flush() error {
 	return nil
 }
 
-func (this *ConsoleWriter) Free() {
+func (c *ConsoleWriter) Free() {
 }

@@ -1,7 +1,6 @@
 package golog
 
 import (
-	//     "fmt"
 	"testing"
 	"time"
 )

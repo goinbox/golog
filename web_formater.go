@@ -1,6 +1,10 @@
 package golog
 
-import "time"
+import (
+	"time"
+
+	"github.com/goinbox/gomisc"
+)
 
 type webFormater struct {
 	logId []byte
@@ -14,22 +18,22 @@ func NewWebFormater(logId, ip []byte) *webFormater {
 	}
 }
 
-func (this *webFormater) Format(level int, msg []byte) []byte {
+func (w *webFormater) Format(level int, msg []byte) []byte {
 	lm, ok := logLevels[level]
 	if !ok {
-		lm = "-"
+		lm = []byte("-")
 	}
 
-	return AppendBytes(
+	return gomisc.AppendBytes(
 		[]byte("["),
-		[]byte(lm),
+		lm,
 		[]byte("]\t"),
 		[]byte("["),
-		[]byte(time.Now().Format(TimeGeneralLayout())),
+		[]byte(time.Now().Format(gomisc.TimeGeneralLayout())),
 		[]byte("]\t"),
-		this.ip,
+		w.ip,
 		[]byte("\t"),
-		this.logId,
+		w.logId,
 		[]byte("\t"),
 		msg,
 		[]byte("\n"),

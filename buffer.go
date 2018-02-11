@@ -54,41 +54,41 @@ type bufFlushRoutine struct {
 	freeCh   chan int
 }
 
-func (this *bufFlushRoutine) addBuffer(buf *buffer) {
-	this.bufAddCh <- buf
+func (b *bufFlushRoutine) addBuffer(buf *buffer) {
+	b.bufAddCh <- buf
 }
 
-func (this *bufFlushRoutine) delBuffer(buf *buffer) {
-	this.bufDelCh <- buf
+func (b *bufFlushRoutine) delBuffer(buf *buffer) {
+	b.bufDelCh <- buf
 }
 
-func (this *bufFlushRoutine) flushAll() {
-	for index, buf := range this.buffers {
+func (b *bufFlushRoutine) flushAll() {
+	for index, buf := range b.buffers {
 		if buf == nil || buf.buf == nil {
-			delete(this.buffers, index)
+			delete(b.buffers, index)
 		} else {
 			buf.Flush()
 		}
 	}
 }
 
-func (this *bufFlushRoutine) run(timeInterval time.Duration) {
+func (b *bufFlushRoutine) run(timeInterval time.Duration) {
 	ticker := time.NewTicker(timeInterval)
 
 	for {
 		select {
-		case buf, _ := <-this.bufAddCh:
-			buf.index = this.curIndex
-			this.buffers[this.curIndex] = buf
-			this.curIndex++
-		case buf, _ := <-this.bufDelCh:
-			delete(this.buffers, buf.index)
+		case buf, _ := <-b.bufAddCh:
+			buf.index = b.curIndex
+			b.buffers[b.curIndex] = buf
+			b.curIndex++
+		case buf, _ := <-b.bufDelCh:
+			delete(b.buffers, buf.index)
 			buf.buf = nil
 		case <-ticker.C:
-			this.flushAll()
-		case <-this.freeCh:
-			this.flushAll()
-			this.freeCh <- 1
+			b.flushAll()
+		case <-b.freeCh:
+			b.flushAll()
+			b.freeCh <- 1
 			return
 		}
 	}
@@ -109,43 +109,43 @@ type buffer struct {
 }
 
 func NewBuffer(w IWriter, bufsize int) *buffer {
-	this := &buffer{
+	b := &buffer{
 		w:   w,
 		buf: bufio.NewWriterSize(w, bufsize),
 
 		lock: new(sync.Mutex),
 	}
 
-	bfr.addBuffer(this)
+	bfr.addBuffer(b)
 
-	return this
+	return b
 }
 
-func (this *buffer) Write(p []byte) (int, error) {
-	this.lock.Lock()
-	n, err := this.buf.Write(p)
-	this.lock.Unlock()
+func (b *buffer) Write(p []byte) (int, error) {
+	b.lock.Lock()
+	n, err := b.buf.Write(p)
+	b.lock.Unlock()
 
 	return n, err
 }
 
-func (this *buffer) Flush() error {
+func (b *buffer) Flush() error {
 	var err error
 
-	this.lock.Lock()
-	if this.buf != nil {
-		err = this.buf.Flush()
+	b.lock.Lock()
+	if b.buf != nil {
+		err = b.buf.Flush()
 	}
-	this.lock.Unlock()
+	b.lock.Unlock()
 
 	return err
 }
 
-func (this *buffer) Free() {
-	this.Flush()
-	this.w.Free()
+func (b *buffer) Free() {
+	b.Flush()
+	b.w.Free()
 
-	bfr.delBuffer(this)
+	bfr.delBuffer(b)
 }
 
 /**  @} */

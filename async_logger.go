@@ -50,21 +50,21 @@ type asyncLogRoutine struct {
 	freeCh chan int
 }
 
-func (this *asyncLogRoutine) run() {
+func (a *asyncLogRoutine) run() {
 	defer func() {
-		this.freeCh <- 1
+		a.freeCh <- 1
 	}()
 
 	for {
-		am := <-this.msgCh
-		free := this.processAsyncMsg(am)
+		am := <-a.msgCh
+		free := a.processAsyncMsg(am)
 		if free {
 			return
 		}
 	}
 }
 
-func (this *asyncLogRoutine) processAsyncMsg(am *asyncMsg) bool {
+func (a *asyncLogRoutine) processAsyncMsg(am *asyncMsg) bool {
 	switch am.kind {
 	case ASYNC_MSG_KIND_LOG:
 		am.logger.Log(am.level, am.msg)
@@ -90,49 +90,49 @@ type asyncLogger struct {
 }
 
 func NewAsyncLogger(logger ILogger) *asyncLogger {
-	this := &asyncLogger{
+	a := &asyncLogger{
 		logger: logger,
 	}
 
-	return this
+	return a
 }
 
-func (this *asyncLogger) Debug(msg []byte) {
-	this.Log(LEVEL_DEBUG, msg)
+func (a *asyncLogger) Debug(msg []byte) {
+	a.Log(LEVEL_DEBUG, msg)
 }
 
-func (this *asyncLogger) Info(msg []byte) {
-	this.Log(LEVEL_INFO, msg)
+func (a *asyncLogger) Info(msg []byte) {
+	a.Log(LEVEL_INFO, msg)
 }
 
-func (this *asyncLogger) Notice(msg []byte) {
-	this.Log(LEVEL_NOTICE, msg)
+func (a *asyncLogger) Notice(msg []byte) {
+	a.Log(LEVEL_NOTICE, msg)
 }
 
-func (this *asyncLogger) Warning(msg []byte) {
-	this.Log(LEVEL_WARNING, msg)
+func (a *asyncLogger) Warning(msg []byte) {
+	a.Log(LEVEL_WARNING, msg)
 }
 
-func (this *asyncLogger) Error(msg []byte) {
-	this.Log(LEVEL_ERROR, msg)
+func (a *asyncLogger) Error(msg []byte) {
+	a.Log(LEVEL_ERROR, msg)
 }
 
-func (this *asyncLogger) Critical(msg []byte) {
-	this.Log(LEVEL_CRITICAL, msg)
+func (a *asyncLogger) Critical(msg []byte) {
+	a.Log(LEVEL_CRITICAL, msg)
 }
 
-func (this *asyncLogger) Alert(msg []byte) {
-	this.Log(LEVEL_ALERT, msg)
+func (a *asyncLogger) Alert(msg []byte) {
+	a.Log(LEVEL_ALERT, msg)
 }
 
-func (this *asyncLogger) Emergency(msg []byte) {
-	this.Log(LEVEL_EMERGENCY, msg)
+func (a *asyncLogger) Emergency(msg []byte) {
+	a.Log(LEVEL_EMERGENCY, msg)
 }
 
-func (this *asyncLogger) Log(level int, msg []byte) error {
+func (a *asyncLogger) Log(level int, msg []byte) error {
 	alr.msgCh <- &asyncMsg{
 		kind:   ASYNC_MSG_KIND_LOG,
-		logger: this.logger,
+		logger: a.logger,
 
 		msg:   msg,
 		level: level,
@@ -141,19 +141,19 @@ func (this *asyncLogger) Log(level int, msg []byte) error {
 	return nil
 }
 
-func (this *asyncLogger) Flush() error {
+func (a *asyncLogger) Flush() error {
 	alr.msgCh <- &asyncMsg{
 		kind:   ASYNC_MSG_KIND_FLUSH,
-		logger: this.logger,
+		logger: a.logger,
 	}
 
 	return nil
 }
 
-func (this *asyncLogger) Free() {
+func (a *asyncLogger) Free() {
 	alr.msgCh <- &asyncMsg{
 		kind:   ASYNC_MSG_KIND_FREE_LOGGER,
-		logger: this.logger,
+		logger: a.logger,
 	}
 }
 

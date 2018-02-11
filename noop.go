@@ -3,58 +3,58 @@ package golog
 type NoopLogger struct {
 }
 
-func (this *NoopLogger) Debug(msg []byte) {
+func (n *NoopLogger) Debug(msg []byte) {
 }
 
-func (this *NoopLogger) Info(msg []byte) {
+func (n *NoopLogger) Info(msg []byte) {
 }
 
-func (this *NoopLogger) Notice(msg []byte) {
+func (n *NoopLogger) Notice(msg []byte) {
 }
 
-func (this *NoopLogger) Warning(msg []byte) {
+func (n *NoopLogger) Warning(msg []byte) {
 }
 
-func (this *NoopLogger) Error(msg []byte) {
+func (n *NoopLogger) Error(msg []byte) {
 }
 
-func (this *NoopLogger) Critical(msg []byte) {
+func (n *NoopLogger) Critical(msg []byte) {
 }
 
-func (this *NoopLogger) Alert(msg []byte) {
+func (n *NoopLogger) Alert(msg []byte) {
 }
 
-func (this *NoopLogger) Emergency(msg []byte) {
+func (n *NoopLogger) Emergency(msg []byte) {
 }
 
-func (this *NoopLogger) Log(level int, msg []byte) error {
+func (n *NoopLogger) Log(level int, msg []byte) error {
 	return nil
 }
 
-func (this *NoopLogger) Flush() error {
+func (n *NoopLogger) Flush() error {
 	return nil
 }
 
-func (this *NoopLogger) Free() {
+func (n *NoopLogger) Free() {
 }
 
 type NoopFormater struct {
 }
 
-func (this *NoopFormater) Format(level int, msg []byte) []byte {
+func (n *NoopFormater) Format(level int, msg []byte) []byte {
 	return msg
 }
 
 type NoopWriter struct {
 }
 
-func (this *NoopWriter) Write(msg []byte) (int, error) {
+func (n *NoopWriter) Write(msg []byte) (int, error) {
 	return 0, nil
 }
 
-func (this *NoopWriter) Flush() error {
+func (n *NoopWriter) Flush() error {
 	return nil
 }
 
-func (this *NoopWriter) Free() {
+func (n *NoopWriter) Free() {
 }

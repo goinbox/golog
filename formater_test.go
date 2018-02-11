@@ -17,3 +17,12 @@ func TestWebFormater(t *testing.T) {
 	b := f.Format(LEVEL_EMERGENCY, []byte("abc"))
 	t.Log(string(b))
 }
+
+func TestConsoleFormater(t *testing.T) {
+	f := NewConsoleFormater()
+
+	for level, _ := range logLevels {
+		b := f.Format(level, logLevels[level])
+		t.Log(string(b))
+	}
+}

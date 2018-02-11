@@ -26,7 +26,7 @@ func NewSimpleLogger(writer IWriter, globalLevel int, formater IFormater) (*simp
 		return nil, errors.New("Global level not exists")
 	}
 
-	this := &simpleLogger{
+	s := &simpleLogger{
 		globalLevel:  globalLevel,
 		w:            writer,
 		levelWriters: make(map[int]IWriter),
@@ -37,71 +37,71 @@ func NewSimpleLogger(writer IWriter, globalLevel int, formater IFormater) (*simp
 	noopWriter := new(NoopWriter)
 	for level, _ := range logLevels {
 		if level < globalLevel {
-			this.levelWriters[level] = noopWriter
+			s.levelWriters[level] = noopWriter
 		} else {
-			this.levelWriters[level] = this.w
+			s.levelWriters[level] = s.w
 		}
 	}
 
 	if formater == nil {
 		formater = new(NoopFormater)
 	}
-	this.formater = formater
+	s.formater = formater
 
-	return this, nil
+	return s, nil
 }
 
-func (this *simpleLogger) Debug(msg []byte) {
-	this.Log(LEVEL_DEBUG, msg)
+func (s *simpleLogger) Debug(msg []byte) {
+	s.Log(LEVEL_DEBUG, msg)
 }
 
-func (this *simpleLogger) Info(msg []byte) {
-	this.Log(LEVEL_INFO, msg)
+func (s *simpleLogger) Info(msg []byte) {
+	s.Log(LEVEL_INFO, msg)
 }
 
-func (this *simpleLogger) Notice(msg []byte) {
-	this.Log(LEVEL_NOTICE, msg)
+func (s *simpleLogger) Notice(msg []byte) {
+	s.Log(LEVEL_NOTICE, msg)
 }
 
-func (this *simpleLogger) Warning(msg []byte) {
-	this.Log(LEVEL_WARNING, msg)
+func (s *simpleLogger) Warning(msg []byte) {
+	s.Log(LEVEL_WARNING, msg)
 }
 
-func (this *simpleLogger) Error(msg []byte) {
-	this.Log(LEVEL_ERROR, msg)
+func (s *simpleLogger) Error(msg []byte) {
+	s.Log(LEVEL_ERROR, msg)
 }
 
-func (this *simpleLogger) Critical(msg []byte) {
-	this.Log(LEVEL_CRITICAL, msg)
+func (s *simpleLogger) Critical(msg []byte) {
+	s.Log(LEVEL_CRITICAL, msg)
 }
 
-func (this *simpleLogger) Alert(msg []byte) {
-	this.Log(LEVEL_ALERT, msg)
+func (s *simpleLogger) Alert(msg []byte) {
+	s.Log(LEVEL_ALERT, msg)
 }
 
-func (this *simpleLogger) Emergency(msg []byte) {
-	this.Log(LEVEL_EMERGENCY, msg)
+func (s *simpleLogger) Emergency(msg []byte) {
+	s.Log(LEVEL_EMERGENCY, msg)
 }
 
-func (this *simpleLogger) Log(level int, msg []byte) error {
-	writer, ok := this.levelWriters[level]
+func (s *simpleLogger) Log(level int, msg []byte) error {
+	writer, ok := s.levelWriters[level]
 	if !ok {
 		return errors.New("Level not exists")
 	}
 
-	msg = this.formater.Format(level, msg)
+	msg = s.formater.Format(level, msg)
 
-	this.lock.Lock()
+	s.lock.Lock()
 	writer.Write(msg)
-	this.lock.Unlock()
+	s.lock.Unlock()
 
 	return nil
 }
 
-func (this *simpleLogger) Flush() error {
-	return this.w.Flush()
+func (s *simpleLogger) Flush() error {
+	return s.w.Flush()
 }
 
-func (this *simpleLogger) Free() {
-	this.w.Free()
+func (s *simpleLogger) Free() {
+	s.w.Free()
 }

@@ -12,6 +12,8 @@ import (
 	"os"
 	"sync"
 	"time"
+
+	"github.com/goinbox/gomisc"
 )
 
 /**
@@ -27,7 +29,7 @@ type FileWriter struct {
 }
 
 func NewFileWriter(path string) (*FileWriter, error) {
-	f, err := openFile(path)
+	file, err := openFile(path)
 	if err != nil {
 		return nil, err
 	}
@@ -37,42 +39,42 @@ func NewFileWriter(path string) (*FileWriter, error) {
 		lock:        new(sync.Mutex),
 		closeOnFree: false,
 
-		File: f,
+		File: file,
 	}, nil
 }
 
-func (this *FileWriter) CloseOnFree(closeOneFree bool) *FileWriter {
-	this.closeOnFree = closeOneFree
+func (f *FileWriter) CloseOnFree(closeOneFree bool) *FileWriter {
+	f.closeOnFree = closeOneFree
 
-	return this
+	return f
 }
 
-func (this *FileWriter) Write(msg []byte) (int, error) {
+func (f *FileWriter) Write(msg []byte) (int, error) {
 	// file may be deleted when doing logrotate
-	if !FileExist(this.path) {
-		this.Close()
-		this.File, _ = openFile(this.path)
+	if !gomisc.FileExist(f.path) {
+		f.Close()
+		f.File, _ = openFile(f.path)
 	}
 
-	this.lock.Lock()
-	n, err := this.File.Write(msg)
-	this.lock.Unlock()
+	f.lock.Lock()
+	n, err := f.File.Write(msg)
+	f.lock.Unlock()
 
 	return n, err
 }
 
-func (this *FileWriter) Flush() error {
+func (f *FileWriter) Flush() error {
 	return nil
 }
 
-func (this *FileWriter) Free() {
-	if this.closeOnFree {
-		this.File.Close()
+func (f *FileWriter) Free() {
+	if f.closeOnFree {
+		f.File.Close()
 	}
 }
 
-func (this *FileWriter) ForceFree() {
-	this.File.Close()
+func (f *FileWriter) ForceFree() {
+	f.File.Close()
 }
 
 func openFile(path string) (*os.File, error) {
@@ -104,41 +106,41 @@ func NewFileWriterWithSplit(path string, split int) (*FileWithSplitWriter, error
 		return nil, errors.New("Split not support")
 	}
 
-	f, err := NewFileWriter(path + "." + suffix)
+	fw, err := NewFileWriter(path + "." + suffix)
 	if err != nil {
 		return nil, err
 	}
 
-	this := &FileWithSplitWriter{
+	f := &FileWithSplitWriter{
 		path:   path,
 		split:  split,
 		suffix: suffix,
 
-		FileWriter: f,
+		FileWriter: fw,
 	}
 
-	return this, nil
+	return f, nil
 }
 
-func (this *FileWithSplitWriter) Write(msg []byte) (int, error) {
-	suffix := makeFileSuffix(this.split)
+func (f *FileWithSplitWriter) Write(msg []byte) (int, error) {
+	suffix := makeFileSuffix(f.split)
 
 	//need split
-	if suffix != this.suffix {
-		this.Free()
-		this.FileWriter, _ = NewFileWriter(this.path + "." + suffix)
-		this.suffix = suffix
+	if suffix != f.suffix {
+		f.Free()
+		f.FileWriter, _ = NewFileWriter(f.path + "." + suffix)
+		f.suffix = suffix
 	}
 
-	return this.File.Write(msg)
+	return f.File.Write(msg)
 }
 
 func makeFileSuffix(split int) string {
 	switch split {
 	case SPLIT_BY_DAY:
-		return time.Now().Format(TIME_FMT_STR_YEAR + TIME_FMT_STR_MONTH + TIME_FMT_STR_DAY)
+		return time.Now().Format(gomisc.TIME_FMT_STR_YEAR + gomisc.TIME_FMT_STR_MONTH + gomisc.TIME_FMT_STR_DAY)
 	case SPLIT_BY_HOUR:
-		return time.Now().Format(TIME_FMT_STR_YEAR + TIME_FMT_STR_MONTH + TIME_FMT_STR_DAY + TIME_FMT_STR_HOUR)
+		return time.Now().Format(gomisc.TIME_FMT_STR_YEAR + gomisc.TIME_FMT_STR_MONTH + gomisc.TIME_FMT_STR_DAY + gomisc.TIME_FMT_STR_HOUR)
 	default:
 		return ""
 	}

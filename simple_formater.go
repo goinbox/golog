@@ -9,6 +9,8 @@ package golog
 
 import (
 	"time"
+
+	"github.com/goinbox/gomisc"
 )
 
 type simpleFormater struct {
@@ -18,17 +20,17 @@ func NewSimpleFormater() *simpleFormater {
 	return new(simpleFormater)
 }
 
-func (this *simpleFormater) Format(level int, msg []byte) []byte {
+func (s *simpleFormater) Format(level int, msg []byte) []byte {
 	lm, ok := logLevels[level]
 	if !ok {
-		lm = "-"
+		lm = []byte("-")
 	}
-	return AppendBytes(
+	return gomisc.AppendBytes(
 		[]byte("["),
-		[]byte(lm),
+		lm,
 		[]byte("]\t"),
 		[]byte("["),
-		[]byte(time.Now().Format(TimeGeneralLayout())),
+		[]byte(time.Now().Format(gomisc.TimeGeneralLayout())),
 		[]byte("]\t"),
 		msg,
 		[]byte("\n"),

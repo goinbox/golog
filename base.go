@@ -19,15 +19,15 @@ const (
 	LEVEL_EMERGENCY = 8
 )
 
-var logLevels map[int]string = map[int]string{
-	LEVEL_DEBUG:     "debug",
-	LEVEL_INFO:      "info",
-	LEVEL_NOTICE:    "notice",
-	LEVEL_WARNING:   "warning",
-	LEVEL_ERROR:     "error",
-	LEVEL_CRITICAL:  "critical",
-	LEVEL_ALERT:     "alert",
-	LEVEL_EMERGENCY: "emergency",
+var logLevels map[int][]byte = map[int][]byte{
+	LEVEL_DEBUG:     []byte("debug"),
+	LEVEL_INFO:      []byte("info"),
+	LEVEL_NOTICE:    []byte("notice"),
+	LEVEL_WARNING:   []byte("warning"),
+	LEVEL_ERROR:     []byte("error"),
+	LEVEL_CRITICAL:  []byte("critical"),
+	LEVEL_ALERT:     []byte("alert"),
+	LEVEL_EMERGENCY: []byte("emergency"),
 }
 
 type ILogger interface {
