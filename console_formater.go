@@ -19,12 +19,12 @@ func NewConsoleFormater() *consoleFormater {
 	}
 
 	c.levelColorFuncs[LEVEL_DEBUG] = color.Black
-	c.levelColorFuncs[LEVEL_INFO] = color.Cyan
-	c.levelColorFuncs[LEVEL_NOTICE] = color.Yellow
-	c.levelColorFuncs[LEVEL_WARNING] = color.Maganta
+	c.levelColorFuncs[LEVEL_INFO] = color.Blue
+	c.levelColorFuncs[LEVEL_NOTICE] = color.Green
+	c.levelColorFuncs[LEVEL_WARNING] = color.Yellow
 	c.levelColorFuncs[LEVEL_ERROR] = color.Red
-	c.levelColorFuncs[LEVEL_CRITICAL] = color.Black
-	c.levelColorFuncs[LEVEL_ALERT] = color.Green
+	c.levelColorFuncs[LEVEL_CRITICAL] = color.Cyan
+	c.levelColorFuncs[LEVEL_ALERT] = color.Maganta
 	c.levelColorFuncs[LEVEL_EMERGENCY] = color.White
 
 	return c
