@@ -1,11 +1,14 @@
 package golog
 
-import "testing"
+import (
+	"strconv"
+	"testing"
+)
 
 func TestConsoleWriter(t *testing.T) {
-	writer := NewStdoutWriter()
-	writer.Write([]byte("test stdout console writer\n"))
-
-	writer = NewStderrWriter()
-	writer.Write([]byte("test stderr console writer\n"))
+	writer := NewConsoleWriter()
+	for i := 0; i < 1000; i++ {
+		s := "test console writer " + strconv.Itoa(i) + " \n"
+		writer.Write([]byte(s))
+	}
 }

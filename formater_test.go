@@ -5,24 +5,24 @@ import (
 )
 
 func TestSimpleFormater(t *testing.T) {
-	f := NewSimpleFormater()
-
-	b := f.Format(LEVEL_EMERGENCY, []byte("abc"))
-	t.Log(string(b))
-}
-
-func TestWebFormater(t *testing.T) {
-	f := NewWebFormater([]byte("xyz"), []byte("10.0.0.1"))
-
-	b := f.Format(LEVEL_EMERGENCY, []byte("abc"))
-	t.Log(string(b))
+	format(simpleFormaterForTest(), []byte("test simple formater"), t)
 }
 
 func TestConsoleFormater(t *testing.T) {
-	f := NewConsoleFormater()
+	cf := NewConsoleFormater(simpleFormaterForTest())
 
+	format(cf, []byte("test console formater"), t)
+}
+
+func simpleFormaterForTest() *simpleFormater {
+	return NewSimpleFormater().
+		SetAddress([]byte("127.0.0.1")).
+		SetTraceId([]byte("123456"))
+}
+
+func format(f IFormater, msg []byte, t *testing.T) {
 	for level, _ := range LogLevels {
-		b := f.Format(level, LogLevels[level])
+		b := f.Format(level, append(msg, '\n'))
 		t.Log(string(b))
 	}
 }

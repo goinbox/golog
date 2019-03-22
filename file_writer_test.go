@@ -1,24 +1,20 @@
 package golog
 
 import (
-	//     "fmt"
+	"strconv"
 	"testing"
+	"time"
 )
 
 func TestFileWriter(t *testing.T) {
-	path := "/tmp/test.log"
+	path := "/tmp/test_file_writer.log"
 
-	writer, _ := NewFileWriter(path)
+	writer, _ := NewFileWriter(path, 1024)
+	for i := 0; i < 1000; i++ {
+		s := "test file writer " + strconv.Itoa(i) + " \n"
+		writer.Write([]byte(s))
+	}
 
-	writer.Write([]byte("test file writer\n"))
-}
-
-func TestFileWriterWithSplit(t *testing.T) {
-	path := "/tmp/test.log"
-
-	writer, _ := NewFileWriterWithSplit(path, SPLIT_BY_DAY)
-	writer.Write([]byte("test file writer with split by day\n"))
-
-	writer, _ = NewFileWriterWithSplit(path, SPLIT_BY_HOUR)
-	writer.Write([]byte("test file writer with split by hour\n"))
+	time.Sleep(time.Second * 10)
+	writer.Free()
 }

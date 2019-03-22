@@ -1,31 +1,35 @@
 package golog
 
 import (
+	"strconv"
 	"testing"
 	"time"
 )
 
 func TestSimpleLogger(t *testing.T) {
-	fw, _ := NewFileWriter("/tmp/test_simple_logger.log")
-	logger, _ := NewSimpleLogger(fw, LEVEL_DEBUG, NewSimpleFormater())
+	fw, _ := NewFileWriter("/tmp/test_simple_logger.log", 1024)
+	aw := NewAsyncWriter(fw, 1024)
+	f := NewSimpleFormater().
+		SetAddress([]byte("127.0.0.1")).
+		SetTraceId([]byte("123456"))
+	logger := NewSimpleLogger(aw, f).
+		SetLogLevel(LEVEL_DEBUG).
+		SetAutoFreeWriter(true)
 
-	msg := []byte("test simple logger")
+	for i := 0; i < 1000; i++ {
+		msg := []byte("test simple logger " + strconv.Itoa(i))
 
-	testLogger(logger, msg)
+		logger.Debug(msg)
+		logger.Info(msg)
+		logger.Notice(msg)
+		logger.Warning(msg)
+		logger.Error(msg)
+		logger.Critical(msg)
+		logger.Alert(msg)
+		logger.Emergency(msg)
+	}
 
-	logger.Free()
-}
-
-func TestSimpleBufferLogger(t *testing.T) {
-	InitBufferAutoFlushRoutine(1024, time.Second*7)
-
-	fw, _ := NewFileWriter("/tmp/test_simple_buffer_logger.log")
-	bw := NewBuffer(fw, 1024)
-	logger, _ := NewSimpleLogger(bw, LEVEL_INFO, NewSimpleFormater())
-
-	msg := []byte("test simple buffer logger")
-
-	testLogger(logger, msg)
+	time.Sleep(time.Second * 10)
 
 	logger.Free()
 }
