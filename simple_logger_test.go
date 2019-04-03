@@ -9,12 +9,12 @@ import (
 func TestSimpleLogger(t *testing.T) {
 	fw, _ := NewFileWriter("/tmp/test_simple_logger.log", 1024)
 	aw := NewAsyncWriter(fw, 1024)
+	defer aw.Free()
+
 	f := NewSimpleFormater().
 		SetAddress([]byte("127.0.0.1")).
 		SetTraceId([]byte("123456"))
-	logger := NewSimpleLogger(aw, f).
-		SetLogLevel(LEVEL_DEBUG).
-		SetAutoFreeWriter(true)
+	logger := NewSimpleLogger(aw, f).SetLogLevel(LEVEL_DEBUG)
 
 	for i := 0; i < 1000; i++ {
 		msg := []byte("test simple logger " + strconv.Itoa(i))
@@ -30,6 +30,4 @@ func TestSimpleLogger(t *testing.T) {
 	}
 
 	time.Sleep(time.Second * 10)
-
-	logger.Free()
 }
