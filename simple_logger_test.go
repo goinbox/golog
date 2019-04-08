@@ -12,8 +12,7 @@ func TestSimpleLogger(t *testing.T) {
 	defer aw.Free()
 
 	f := NewSimpleFormater().
-		SetAddress([]byte("127.0.0.1")).
-		SetTraceId([]byte("123456"))
+		SetAddress([]byte("127.0.0.1"))
 	logger := NewSimpleLogger(aw, f).SetLogLevel(LEVEL_DEBUG)
 
 	for i := 0; i < 1000; i++ {

@@ -15,7 +15,6 @@ import (
 
 type simpleFormater struct {
 	address []byte
-	traceId []byte
 
 	timeLayout string
 }
@@ -23,19 +22,12 @@ type simpleFormater struct {
 func NewSimpleFormater() *simpleFormater {
 	return &simpleFormater{
 		[]byte("-"),
-		[]byte("-"),
 		gomisc.TimeGeneralLayout(),
 	}
 }
 
 func (s *simpleFormater) SetAddress(address []byte) *simpleFormater {
 	s.address = address
-
-	return s
-}
-
-func (s *simpleFormater) SetTraceId(traceId []byte) *simpleFormater {
-	s.traceId = traceId
 
 	return s
 }
@@ -56,7 +48,6 @@ func (s *simpleFormater) Format(level int, msg []byte) []byte {
 		[]byte("["), lm, []byte("]\t"),
 		[]byte("["), []byte(time.Now().Format(s.timeLayout)), []byte("]\t"),
 		s.address, []byte("\t"),
-		s.traceId, []byte("\t"),
 		msg,
 	)
 }

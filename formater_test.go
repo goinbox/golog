@@ -16,8 +16,7 @@ func TestConsoleFormater(t *testing.T) {
 
 func simpleFormaterForTest() *simpleFormater {
 	return NewSimpleFormater().
-		SetAddress([]byte("127.0.0.1")).
-		SetTraceId([]byte("123456"))
+		SetAddress([]byte("127.0.0.1"))
 }
 
 func format(f IFormater, msg []byte, t *testing.T) {
