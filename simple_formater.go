@@ -14,22 +14,13 @@ import (
 )
 
 type simpleFormater struct {
-	address []byte
-
 	timeLayout string
 }
 
 func NewSimpleFormater() *simpleFormater {
 	return &simpleFormater{
-		[]byte("-"),
 		gomisc.TimeGeneralLayout(),
 	}
-}
-
-func (s *simpleFormater) SetAddress(address []byte) *simpleFormater {
-	s.address = address
-
-	return s
 }
 
 func (s *simpleFormater) SetTimeLayout(layout string) *simpleFormater {
@@ -47,7 +38,6 @@ func (s *simpleFormater) Format(level int, msg []byte) []byte {
 	return gomisc.AppendBytes(
 		[]byte("["), lm, []byte("]\t"),
 		[]byte("["), []byte(time.Now().Format(s.timeLayout)), []byte("]\t"),
-		s.address, []byte("\t"),
 		msg,
 	)
 }

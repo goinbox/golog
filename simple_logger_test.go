@@ -11,8 +11,7 @@ func TestSimpleLogger(t *testing.T) {
 	aw := NewAsyncWriter(fw, 1024)
 	defer aw.Free()
 
-	f := NewSimpleFormater().
-		SetAddress([]byte("127.0.0.1"))
+	f := NewSimpleFormater()
 	logger := NewSimpleLogger(aw, f).SetLogLevel(LEVEL_DEBUG)
 
 	for i := 0; i < 1000; i++ {
