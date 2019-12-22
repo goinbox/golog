@@ -32,35 +32,35 @@ func (s *simpleLogger) SetLogLevel(level int) *simpleLogger {
 }
 
 func (s *simpleLogger) Debug(msg []byte) {
-	s.Log(LEVEL_DEBUG, msg)
+	_ = s.Log(LEVEL_DEBUG, msg)
 }
 
 func (s *simpleLogger) Info(msg []byte) {
-	s.Log(LEVEL_INFO, msg)
+	_ = s.Log(LEVEL_INFO, msg)
 }
 
 func (s *simpleLogger) Notice(msg []byte) {
-	s.Log(LEVEL_NOTICE, msg)
+	_ = s.Log(LEVEL_NOTICE, msg)
 }
 
 func (s *simpleLogger) Warning(msg []byte) {
-	s.Log(LEVEL_WARNING, msg)
+	_ = s.Log(LEVEL_WARNING, msg)
 }
 
 func (s *simpleLogger) Error(msg []byte) {
-	s.Log(LEVEL_ERROR, msg)
+	_ = s.Log(LEVEL_ERROR, msg)
 }
 
 func (s *simpleLogger) Critical(msg []byte) {
-	s.Log(LEVEL_CRITICAL, msg)
+	_ = s.Log(LEVEL_CRITICAL, msg)
 }
 
 func (s *simpleLogger) Alert(msg []byte) {
-	s.Log(LEVEL_ALERT, msg)
+	_ = s.Log(LEVEL_ALERT, msg)
 }
 
 func (s *simpleLogger) Emergency(msg []byte) {
-	s.Log(LEVEL_EMERGENCY, msg)
+	_ = s.Log(LEVEL_EMERGENCY, msg)
 }
 
 func (s *simpleLogger) Log(level int, msg []byte) error {
