@@ -3,9 +3,9 @@ package golog
 import "sync"
 
 const (
-	ASYNC_MSG_KIND_WRITE = 1
-	ASYNC_MSG_KIND_FLUSH = 2
-	ASYNC_MSG_KIND_FREE  = 3
+	AsyncMsgKindWrite = 1
+	AsyncMsgKindFlush = 2
+	AsyncMsgKindFree  = 3
 )
 
 type asyncMsg struct {
@@ -40,11 +40,11 @@ func (a *asyncWriter) asyncLogRoutine() {
 	for {
 		am := <-a.msgCh
 		switch am.kind {
-		case ASYNC_MSG_KIND_WRITE:
-			a.w.Write(am.msg)
-		case ASYNC_MSG_KIND_FLUSH:
-			a.w.Flush()
-		case ASYNC_MSG_KIND_FREE:
+		case AsyncMsgKindWrite:
+			_, _ = a.w.Write(am.msg)
+		case AsyncMsgKindFlush:
+			_ = a.w.Flush()
+		case AsyncMsgKindFree:
 			a.w.Free()
 			return
 		}
@@ -52,19 +52,19 @@ func (a *asyncWriter) asyncLogRoutine() {
 }
 
 func (a *asyncWriter) Write(p []byte) (int, error) {
-	a.msgCh <- &asyncMsg{ASYNC_MSG_KIND_WRITE, p}
+	a.msgCh <- &asyncMsg{AsyncMsgKindWrite, p}
 
 	return len(p), nil
 }
 
 func (a *asyncWriter) Flush() error {
-	a.msgCh <- &asyncMsg{ASYNC_MSG_KIND_FLUSH, nil}
+	a.msgCh <- &asyncMsg{AsyncMsgKindFlush, nil}
 
 	return nil
 }
 
 func (a *asyncWriter) Free() {
-	a.msgCh <- &asyncMsg{ASYNC_MSG_KIND_FREE, nil}
+	a.msgCh <- &asyncMsg{AsyncMsgKindFree, nil}
 
 	a.wg.Wait()
 }
