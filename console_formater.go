@@ -17,14 +17,14 @@ func NewConsoleFormater(f IFormater) *consoleFormater {
 		f: f,
 
 		levelColorFuncs: map[int]colorFunc{
-			LEVEL_DEBUG:     color.Yellow,
-			LEVEL_INFO:      color.Blue,
-			LEVEL_NOTICE:    color.Cyan,
-			LEVEL_WARNING:   color.Maganta,
-			LEVEL_ERROR:     color.Red,
-			LEVEL_CRITICAL:  color.Black,
-			LEVEL_ALERT:     color.White,
-			LEVEL_EMERGENCY: color.Green,
+			LevelDebug:     color.Yellow,
+			LevelInfo:      color.Blue,
+			LevelNotice:    color.Cyan,
+			LevelWarning:   color.Maganta,
+			LevelError:     color.Red,
+			LevelCritical:  color.Black,
+			LevelAlert:     color.White,
+			LevelEmergency: color.Green,
 		},
 	}
 

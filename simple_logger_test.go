@@ -12,7 +12,7 @@ func TestSimpleLogger(t *testing.T) {
 	defer aw.Free()
 
 	f := NewSimpleFormater()
-	logger := NewSimpleLogger(aw, f).SetLogLevel(LEVEL_DEBUG)
+	logger := NewSimpleLogger(aw, f).SetLogLevel(LevelDebug)
 
 	for i := 0; i < 1000; i++ {
 		msg := []byte("test simple logger " + strconv.Itoa(i))
