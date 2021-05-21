@@ -18,9 +18,9 @@ func simpleFormaterForTest() *simpleFormater {
 	return NewSimpleFormater()
 }
 
-func format(f IFormater, msg []byte, t *testing.T) {
+func format(f Formater, msg []byte, t *testing.T) {
 	for level, _ := range LogLevels {
-		b := f.Format(level, append(msg, '\n'))
+		b := f.Format(level, append(msg))
 		t.Log(string(b))
 	}
 }

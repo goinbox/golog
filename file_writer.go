@@ -92,10 +92,10 @@ func (f *FileWriter) Flush() error {
 }
 
 func (f *FileWriter) Free() {
-	f.ensureFileExist()
+	_ = f.ensureFileExist()
 
-	f.flushBuffer()
-	f.File.Close()
+	_ = f.flushBuffer()
+	_ = f.File.Close()
 }
 
 func openFile(path string) (*os.File, error) {
@@ -112,7 +112,7 @@ func (f *FileWriter) ensureFileExist() error {
 		return nil
 	}
 
-	f.Close()
+	_ = f.Close()
 
 	var err error
 	f.File, err = openFile(f.path)

@@ -14,13 +14,13 @@ type asyncMsg struct {
 }
 
 type asyncWriter struct {
-	w IWriter
+	w Writer
 
 	msgCh chan *asyncMsg
 	wg    *sync.WaitGroup
 }
 
-func NewAsyncWriter(w IWriter, queueSize int) *asyncWriter {
+func NewAsyncWriter(w Writer, queueSize int) *asyncWriter {
 	a := &asyncWriter{
 		w: w,
 

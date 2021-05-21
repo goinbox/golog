@@ -9,6 +9,6 @@ func TestConsoleWriter(t *testing.T) {
 	writer := NewConsoleWriter()
 	for i := 0; i < 1000; i++ {
 		s := "test console writer " + strconv.Itoa(i) + " \n"
-		writer.Write([]byte(s))
+		_, _ = writer.Write([]byte(s))
 	}
 }

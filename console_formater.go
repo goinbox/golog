@@ -7,12 +7,12 @@ import (
 type colorFunc func(msg []byte) []byte
 
 type consoleFormater struct {
-	f IFormater
+	f Formater
 
 	levelColorFuncs map[int]colorFunc
 }
 
-func NewConsoleFormater(f IFormater) *consoleFormater {
+func NewConsoleFormater(f Formater) *consoleFormater {
 	c := &consoleFormater{
 		f: f,
 

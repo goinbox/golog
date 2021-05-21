@@ -30,7 +30,7 @@ var LogLevels = map[int][]byte{
 	LevelDebug:     []byte("debug"),
 }
 
-type ILogger interface {
+type Logger interface {
 	Debug(msg []byte)
 	Info(msg []byte)
 	Notice(msg []byte)
@@ -43,11 +43,11 @@ type ILogger interface {
 	Log(level int, msg []byte) error
 }
 
-type IFormater interface {
+type Formater interface {
 	Format(level int, msg []byte) []byte
 }
 
-type IWriter interface {
+type Writer interface {
 	io.Writer
 
 	Flush() error

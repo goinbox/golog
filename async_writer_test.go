@@ -16,7 +16,7 @@ func TestAsyncWriter(t *testing.T) {
 
 	for i := 0; i < 1000; i++ {
 		s := "test async writer " + strconv.Itoa(i) + " \n"
-		aw.Write([]byte(s))
+		_, _ = aw.Write([]byte(s))
 	}
 
 	time.Sleep(time.Second * 10)

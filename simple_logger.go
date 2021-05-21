@@ -7,13 +7,13 @@
 package golog
 
 type simpleLogger struct {
-	writer   IWriter
-	formater IFormater
+	writer   Writer
+	formater Formater
 
 	glevel int
 }
 
-func NewSimpleLogger(writer IWriter, formater IFormater) *simpleLogger {
+func NewSimpleLogger(writer Writer, formater Formater) *simpleLogger {
 	return &simpleLogger{
 		writer:   writer,
 		formater: formater,

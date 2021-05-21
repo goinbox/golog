@@ -12,7 +12,7 @@ func TestFileWriter(t *testing.T) {
 	writer, _ := NewFileWriter(path, 1024)
 	for i := 0; i < 1000; i++ {
 		s := "test file writer " + strconv.Itoa(i) + " \n"
-		writer.Write([]byte(s))
+		_, _ = writer.Write([]byte(s))
 	}
 
 	time.Sleep(time.Second * 10)
