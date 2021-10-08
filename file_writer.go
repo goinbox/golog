@@ -15,7 +15,7 @@ import (
 	"time"
 )
 
-type FileWriter struct {
+type fileWriter struct {
 	*os.File
 
 	path           string
@@ -27,13 +27,13 @@ type FileWriter struct {
 	bufpos  int
 }
 
-func NewFileWriter(path string, bufsize int) (*FileWriter, error) {
+func NewFileWriter(path string, bufsize int) (*fileWriter, error) {
 	file, err := openFile(path)
 	if err != nil {
 		return nil, err
 	}
 
-	return &FileWriter{
+	return &fileWriter{
 		File: file,
 
 		path:           path,
@@ -46,103 +46,103 @@ func NewFileWriter(path string, bufsize int) (*FileWriter, error) {
 	}, nil
 }
 
-func (f *FileWriter) Write(msg []byte) (int, error) {
-	f.lock.Lock()
-	defer f.lock.Unlock()
+func (w *fileWriter) Write(msg []byte) (int, error) {
+	w.lock.Lock()
+	defer w.lock.Unlock()
 
-	err := f.ensureFileExist()
+	err := w.ensureFileExist()
 	if err != nil {
 		return 0, err
 	}
 
-	if f.bufsize == 0 {
-		return f.File.Write(msg)
+	if w.bufsize == 0 {
+		return w.File.Write(msg)
 	}
 
-	if f.appendToBuffer(msg) {
+	if w.appendToBuffer(msg) {
 		return len(msg), nil
 	}
 
-	err = f.flushBuffer()
+	err = w.flushBuffer()
 	if err != nil {
 		return 0, err
 	}
 
-	if f.appendToBuffer(msg) {
+	if w.appendToBuffer(msg) {
 		return len(msg), nil
 	}
 
-	return f.File.Write(msg)
+	return w.File.Write(msg)
 }
 
-func (f *FileWriter) Flush() error {
-	if f.bufsize == 0 {
+func (w *fileWriter) Flush() error {
+	if w.bufsize == 0 {
 		return nil
 	}
 
-	f.lock.Lock()
-	defer f.lock.Unlock()
+	w.lock.Lock()
+	defer w.lock.Unlock()
 
-	err := f.ensureFileExist()
+	err := w.ensureFileExist()
 	if err != nil {
 		return err
 	}
 
-	return f.flushBuffer()
+	return w.flushBuffer()
 }
 
-func (f *FileWriter) Free() {
-	_ = f.ensureFileExist()
+func (w *fileWriter) Free() {
+	_ = w.ensureFileExist()
 
-	_ = f.flushBuffer()
-	_ = f.File.Close()
+	_ = w.flushBuffer()
+	_ = w.File.Close()
 }
 
 func openFile(path string) (*os.File, error) {
 	return os.OpenFile(path, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0644)
 }
 
-func (f *FileWriter) ensureFileExist() error {
+func (w *fileWriter) ensureFileExist() error {
 	nowTimeSecond := time.Now().Unix()
-	if f.lastTimeSecond == nowTimeSecond {
+	if w.lastTimeSecond == nowTimeSecond {
 		return nil
 	}
 
-	if gomisc.FileExist(f.path) {
+	if gomisc.FileExist(w.path) {
 		return nil
 	}
 
-	_ = f.Close()
+	_ = w.Close()
 
 	var err error
-	f.File, err = openFile(f.path)
+	w.File, err = openFile(w.path)
 	if err != nil {
 		return err
 	}
 
-	f.lastTimeSecond = nowTimeSecond
+	w.lastTimeSecond = nowTimeSecond
 	return nil
 }
 
-func (f *FileWriter) appendToBuffer(msg []byte) bool {
-	after := f.bufpos + len(msg)
-	if after >= f.bufsize {
+func (w *fileWriter) appendToBuffer(msg []byte) bool {
+	after := w.bufpos + len(msg)
+	if after >= w.bufsize {
 		return false
 	}
 
-	copy(f.buf[f.bufpos:], msg)
-	f.bufpos = after
+	copy(w.buf[w.bufpos:], msg)
+	w.bufpos = after
 
 	return true
 }
 
-func (f *FileWriter) flushBuffer() error {
-	if f.bufpos == 0 {
+func (w *fileWriter) flushBuffer() error {
+	if w.bufpos == 0 {
 		return nil
 	}
 
-	_, err := f.File.Write(f.buf[:f.bufpos])
-	f.bufpos = 0
+	_, err := w.File.Write(w.buf[:w.bufpos])
+	w.bufpos = 0
 
 	return err
 }

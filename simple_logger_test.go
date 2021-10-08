@@ -3,29 +3,27 @@ package golog
 import (
 	"strconv"
 	"testing"
-	"time"
 )
 
 func TestSimpleLogger(t *testing.T) {
-	fw, _ := NewFileWriter("/tmp/test_simple_logger.log", 1024)
-	aw := NewAsyncWriter(fw, 1024)
-	defer aw.Free()
-
-	f := NewSimpleFormater()
-	logger := NewSimpleLogger(aw, f).SetLogLevel(LevelDebug)
+	w, _ := NewFileWriter("/dev/stdout", 0)
+	f := NewJsonFormater()
+	logger := NewSimpleLogger(w, f).SetLogLevel(LevelDebug).EnableColor()
 
 	for i := 0; i < 1000; i++ {
-		msg := []byte("test simple logger " + strconv.Itoa(i))
+		msg := "test simple logger " + strconv.Itoa(i)
+		field := &Field{
+			Key:   "i",
+			Value: i,
+		}
 
-		logger.Debug(msg)
-		logger.Info(msg)
-		logger.Notice(msg)
-		logger.Warning(msg)
-		logger.Error(msg)
-		logger.Critical(msg)
-		logger.Alert(msg)
-		logger.Emergency(msg)
+		logger.Debug(msg, field)
+		logger.Info(msg, field)
+		logger.Notice(msg, field)
+		logger.Warning(msg, field)
+		logger.Error(msg, field)
+		logger.Critical(msg, field)
+		logger.Alert(msg, field)
+		logger.Emergency(msg, field)
 	}
-
-	time.Sleep(time.Second * 10)
 }

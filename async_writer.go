@@ -34,37 +34,37 @@ func NewAsyncWriter(w Writer, queueSize int) *asyncWriter {
 	return a
 }
 
-func (a *asyncWriter) asyncLogRoutine() {
-	defer a.wg.Done()
+func (w *asyncWriter) asyncLogRoutine() {
+	defer w.wg.Done()
 
 	for {
-		am := <-a.msgCh
+		am := <-w.msgCh
 		switch am.kind {
 		case AsyncMsgKindWrite:
-			_, _ = a.w.Write(am.msg)
+			_, _ = w.w.Write(am.msg)
 		case AsyncMsgKindFlush:
-			_ = a.w.Flush()
+			_ = w.w.Flush()
 		case AsyncMsgKindFree:
-			a.w.Free()
+			w.w.Free()
 			return
 		}
 	}
 }
 
-func (a *asyncWriter) Write(p []byte) (int, error) {
-	a.msgCh <- &asyncMsg{AsyncMsgKindWrite, p}
+func (w *asyncWriter) Write(p []byte) (int, error) {
+	w.msgCh <- &asyncMsg{AsyncMsgKindWrite, p}
 
 	return len(p), nil
 }
 
-func (a *asyncWriter) Flush() error {
-	a.msgCh <- &asyncMsg{AsyncMsgKindFlush, nil}
+func (w *asyncWriter) Flush() error {
+	w.msgCh <- &asyncMsg{AsyncMsgKindFlush, nil}
 
 	return nil
 }
 
-func (a *asyncWriter) Free() {
-	a.msgCh <- &asyncMsg{AsyncMsgKindFree, nil}
+func (w *asyncWriter) Free() {
+	w.msgCh <- &asyncMsg{AsyncMsgKindFree, nil}
 
-	a.wg.Wait()
+	w.wg.Wait()
 }
