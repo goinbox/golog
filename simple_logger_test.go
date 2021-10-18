@@ -7,7 +7,7 @@ import (
 
 func TestSimpleLogger(t *testing.T) {
 	w, _ := NewFileWriter("/dev/stdout", 0)
-	f := NewJsonFormater()
+	f := NewSimpleFormater()
 	logger := NewSimpleLogger(w, f).SetLogLevel(LevelDebug).EnableColor()
 
 	for i := 0; i < 1000; i++ {
