@@ -113,9 +113,20 @@ func (l *simpleLogger) SetDefaultFieldKeyMsg(key string) *simpleLogger {
 }
 
 func (l *simpleLogger) With(fields ...*Field) Logger {
-	l.withFields = append(l.withFields, fields...)
+	return &simpleLogger{
+		writer:   l.writer,
+		formater: l.formater,
 
-	return l
+		glevel:     l.glevel,
+		withFields: append(l.withFields, fields...),
+		timeLayout: l.timeLayout,
+
+		enableColor: l.enableColor,
+
+		fieldKeyLevel: l.fieldKeyLevel,
+		fieldKeyTime:  l.fieldKeyTime,
+		fieldKeyMsg:   l.fieldKeyMsg,
+	}
 }
 
 func (l *simpleLogger) Debug(msg string, fields ...*Field) {
