@@ -3,46 +3,32 @@ package golog
 type NoopLogger struct {
 }
 
-func (n *NoopLogger) Debug(msg []byte) {
+func (l *NoopLogger) Debug(msg string, fields ...*Field) {
 }
 
-func (n *NoopLogger) Info(msg []byte) {
+func (l *NoopLogger) Info(msg string, fields ...*Field) {
 }
 
-func (n *NoopLogger) Notice(msg []byte) {
+func (l *NoopLogger) Notice(msg string, fields ...*Field) {
 }
 
-func (n *NoopLogger) Warning(msg []byte) {
+func (l *NoopLogger) Warning(msg string, fields ...*Field) {
 }
 
-func (n *NoopLogger) Error(msg []byte) {
+func (l *NoopLogger) Error(msg string, fields ...*Field) {
 }
 
-func (n *NoopLogger) Critical(msg []byte) {
+func (l *NoopLogger) Critical(msg string, fields ...*Field) {
 }
 
-func (n *NoopLogger) Alert(msg []byte) {
+func (l *NoopLogger) Alert(msg string, fields ...*Field) {
 }
 
-func (n *NoopLogger) Emergency(msg []byte) {
+func (l *NoopLogger) Emergency(msg string, fields ...*Field) {
 }
 
-func (n *NoopLogger) Log(level int, msg []byte) error {
-	return nil
-}
-
-func (n *NoopLogger) Flush() error {
-	return nil
-}
-
-func (n *NoopLogger) Free() {
-}
-
-type NoopFormater struct {
-}
-
-func (n *NoopFormater) Format(level int, msg []byte) []byte {
-	return msg
+func (l *NoopLogger) With(fields ...*Field) Logger {
+	return l
 }
 
 type NoopWriter struct {
