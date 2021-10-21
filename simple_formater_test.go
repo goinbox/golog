@@ -6,6 +6,11 @@ func TestSimpleFormater(t *testing.T) {
 	f := NewSimpleFormater()
 	fields := []*Field{
 		{
+			Key:    "preset",
+			Value:  "test preset",
+			preset: true,
+		},
+		{
 			Key:   "kint",
 			Value: 1,
 		},

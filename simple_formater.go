@@ -2,21 +2,36 @@ package golog
 
 import (
 	"fmt"
-	"strings"
+
+	"github.com/goinbox/gomisc"
 )
 
 type simpleFormater struct {
+	formater Formater
 }
 
 func NewSimpleFormater() *simpleFormater {
-	return &simpleFormater{}
+	return &simpleFormater{
+		formater: NewJsonFormater(),
+	}
+}
+
+func (f *simpleFormater) SetFormater(formater Formater) *simpleFormater {
+	f.formater = formater
+
+	return f
 }
 
 func (f *simpleFormater) Format(fields ...*Field) []byte {
-	list := make([]string, len(fields))
-	for i, field := range fields {
-		list[i] = fmt.Sprintf("%s:%v", field.Key, field.Value)
+	var msg []byte
+	var notPresetFields []*Field
+	for _, field := range fields {
+		if field.preset {
+			msg = gomisc.AppendBytes(msg, []byte(fmt.Sprintf("%v", field.Value)), []byte("\t"))
+		} else {
+			notPresetFields = append(notPresetFields, field)
+		}
 	}
 
-	return []byte(strings.Join(list, "\t"))
+	return gomisc.AppendBytes(msg, f.formater.Format(notPresetFields...))
 }

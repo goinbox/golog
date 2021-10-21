@@ -22,6 +22,8 @@ const (
 type Field struct {
 	Key   string
 	Value interface{}
+
+	preset bool
 }
 
 type Logger interface {

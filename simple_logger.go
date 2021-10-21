@@ -168,23 +168,23 @@ func (l *simpleLogger) log(level int, msg string, fields []*Field) {
 
 	allFields := append([]*Field{
 		{
-			Key:   l.fieldKeyLevel,
-			Value: logLevels[level],
+			Key:    l.fieldKeyLevel,
+			Value:  logLevels[level],
+			preset: true,
 		},
 		{
-			Key:   l.fieldKeyTime,
-			Value: time.Now().Format(l.timeLayout),
+			Key:    l.fieldKeyTime,
+			Value:  time.Now().Format(l.timeLayout),
+			preset: true,
+		},
+		{
+			Key:    l.fieldKeyMsg,
+			Value:  msg,
+			preset: true,
 		},
 	}, l.withFields...)
 
-	allFields = append(allFields, &Field{
-		Key:   l.fieldKeyMsg,
-		Value: msg,
-	})
-
-	allFields = append(allFields, fields...)
-
-	p := l.formater.Format(allFields...)
+	p := l.formater.Format(append(allFields, fields...)...)
 	if l.enableColor {
 		p = levelColorFuncs[level](p)
 	}
