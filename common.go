@@ -49,3 +49,10 @@ type Writer interface {
 	Flush() error
 	Free()
 }
+
+func ErrorField(err error) *Field {
+	return &Field{
+		Key:   "error",
+		Value: err.Error(),
+	}
+}
