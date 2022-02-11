@@ -16,7 +16,7 @@ const (
 	defaultFieldKeyLevel = "level"
 	defaultFieldKeyTime  = "t"
 	defaultFieldKeyMsg   = "msg"
-	defaultTimeLayout    = "2006-02-01 15:04:05.000"
+	defaultTimeLayout    = "2006-01-02 15:04:05.000"
 )
 
 var logLevels = map[int]string{
