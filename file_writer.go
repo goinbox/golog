@@ -99,6 +99,13 @@ func (w *fileWriter) Free() {
 }
 
 func openFile(path string) (*os.File, error) {
+	switch path {
+	case "/dev/stderr":
+		return os.Stderr, nil
+	case "/dev/stdout":
+		return os.Stdout, nil
+	}
+
 	return os.OpenFile(path, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0644)
 }
 
